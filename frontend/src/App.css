@@ -14,6 +14,11 @@ html, body {
   width: 100vw;
   max-width: 100%;
   overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 body {
@@ -26,11 +31,6 @@ body {
   background-attachment: fixed;
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
 }
 
 .app-wrapper {
@@ -38,8 +38,10 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100vw;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 /* NAVBAR */
@@ -54,6 +56,8 @@ body {
   top: 0;
   z-index: 1000;
   width: 100%;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .logo-container {
@@ -112,6 +116,7 @@ body {
   cursor: pointer;
   transition: background 0.2s;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .btn-secondary:hover {
@@ -126,10 +131,11 @@ body {
 /* MAIN CONTENT CONTAINER */
 .main-content {
   flex: 1;
-  padding: 2rem 2vw;
+  padding: 2rem 1.5vw;
   width: 100%;
   max-width: 100% !important;
   margin: 0 !important;
+  box-sizing: border-box;
 }
 
 /* HERO SECTION */
@@ -138,6 +144,7 @@ body {
   margin-bottom: 2.5rem;
   width: 100%;
   padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .hero-text-container h1 {
@@ -158,6 +165,7 @@ body {
   margin: 0 auto;
   padding: 0 1rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .search-input {
@@ -170,6 +178,7 @@ body {
   outline: none;
   background: #ffffff;
   color: #0f172a;
+  box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -182,12 +191,19 @@ body {
   display: flex;
   gap: 0.75rem;
   overflow-x: auto;
-  padding-bottom: 1rem;
+  padding: 0.5rem 1rem 1rem 1rem;
   margin-bottom: 2rem;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .categories-bar {
+    justify-content: center;
+  }
 }
 
 .categories-bar::-webkit-scrollbar {
@@ -205,6 +221,7 @@ body {
   white-space: nowrap;
   color: var(--text-main);
   transition: all 0.2s;
+  flex: 0 0 auto;
 }
 
 .category-pill:hover, .category-pill.active {
@@ -216,7 +233,8 @@ body {
 /* LISTINGS GRID */
 .listings-grid-wrapper {
   width: 100%;
-  padding: 0;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .listings-grid {
@@ -224,6 +242,7 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .listing-card {
@@ -234,6 +253,8 @@ body {
   transition: transform 0.2s, box-shadow 0.2s;
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .listing-card:hover {
@@ -250,6 +271,8 @@ body {
   margin: 1.5rem auto;
   align-items: start;
   width: 100%;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .checkout-left-pane,
@@ -265,6 +288,7 @@ body {
 
 .stripe-input-group {
   margin-bottom: 1.25rem;
+  width: 100%;
 }
 
 .stripe-input-group label {
@@ -303,6 +327,8 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .payment-tab {
@@ -374,6 +400,7 @@ body {
   z-index: 9999;
   font-size: 0.95rem;
   animation: slideUp 0.3s ease;
+  box-sizing: border-box;
 }
 
 .toast-notification.error {
@@ -412,5 +439,10 @@ body {
   .listings-grid {
     grid-template-columns: 1fr;
     gap: 1.25rem;
+  }
+  
+  .checkout-left-pane,
+  .checkout-right-pane {
+    padding: 1.25rem;
   }
 }
