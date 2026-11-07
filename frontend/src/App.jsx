@@ -452,295 +452,245 @@ export default function App() {
                   <h3 style={{ margin: '1.5rem 0 1rem 0', color: '#0f172a', fontSize: '1.1rem' }}>Payment Method</h3>
                   <div className="payment-method-tabs">
                     <div className={`payment-tab ${paymentMethod === 'stripe' ? 'active' : ''}`} onClick={() => setPaymentMethod('stripe')}>💳 Credit Card</div>
-                    <div className={`payment-tab ${paymentMethod === 'upi' ? 'active' : ''}`} onClick={() => setPaymentMethod('upi')}>📱 UPI / QR</div>
-                    <div className={`payment-tab ${paymentMethod === 'cash' ? 'active' : ''}`} onClick={() => setPaymentMethod('cash')}>💵 Pay on Arrival</div>
                   </div>
 
                   {paymentMethod === 'stripe' && (
-                    <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>
+                    <div className="stripe-card-container">
                       <div className="stripe-input-group">
-                        <label>Card information</label>
-                        <input 
-                          type="text" 
-                          name="spotshare_card_number"
-                          id="spotshare_card_number"
-                          autoComplete="new-password"
-                          placeholder="4242 4242 4242 4242" 
-                          maxLength="19"
-                          value={checkoutForm.cardNumber} 
-                          onChange={handleCardNumberChange} 
-                        />
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                        <div className="stripe-input-group" style={{ margin: 0 }}>
-                          <label>MM / YY</label>
+                        <label>Card Information</label>
+                        <div className="stripe-combined-input">
                           <input 
                             type="text" 
-                            name="spotshare_card_expiry"
-                            id="spotshare_card_expiry"
-                            autoComplete="new-password"
-                            placeholder="MM / YY" 
-                            maxLength="5"
-                            value={checkoutForm.expiry} 
-                            onChange={handleExpiryChange} 
+                            placeholder="4242 4242 4242 4242" 
+                            value={checkoutForm.cardNumber}
+                            onChange={handleCardNumberChange}
+                            maxLength="19"
+                            required 
                           />
-                        </div>
-                        <div className="stripe-input-group" style={{ margin: 0 }}>
-                          <label>CVC</label>
-                          <input 
-                            type="text" 
-                            name="spotshare_card_cvc"
-                            id="spotshare_card_cvc"
-                            autoComplete="new-password"
-                            placeholder="123" 
-                            maxLength="4"
-                            value={checkoutForm.cvc} 
-                            onChange={handleCvcChange} 
-                          />
+                          <div className="stripe-card-inline-group">
+                            <input 
+                              type="text" 
+                              placeholder="MM/YY" 
+                              value={checkoutForm.expiry}
+                              onChange={handleExpiryChange}
+                              maxLength="5"
+                              required 
+                            />
+                            <input 
+                              type="password" 
+                              placeholder="CVC" 
+                              value={checkoutForm.cvc}
+                              onChange={handleCvcChange}
+                              maxLength="4"
+                              required 
+                            />
+                          </div>
                         </div>
                       </div>
-                      <div className="stripe-input-group" style={{ marginTop: '1rem', marginBottom: 0 }}>
-                        <label>Cardholder name</label>
+
+                      <div className="stripe-input-group">
+                        <label>Cardholder Name</label>
                         <input 
                           type="text" 
-                          name="spotshare_card_holder"
-                          id="spotshare_card_holder"
-                          autoComplete="new-password"
                           placeholder="Full name on card" 
-                          maxLength="50"
-                          value={checkoutForm.cardholderName} 
-                          onChange={(e) => setCheckoutForm(prev => ({ ...prev, cardholderName: e.target.value }))} 
+                          value={checkoutForm.cardholderName}
+                          onChange={(e) => setCheckoutForm(prev => ({ ...prev, cardholderName: e.target.value }))}
+                          required 
                         />
+                      </div>
+
+                      <div className="stripe-input-group" style={{ marginBottom: '1.5rem' }}>
+                        <label>Country or region</label>
+                        <select 
+                          value={checkoutForm.country}
+                          onChange={(e) => setCheckoutForm(prev => ({ ...prev, country: e.target.value }))}
+                        >
+                          <option value="India">India</option>
+                          <option value="United States">United States</option>
+                          <option value="United Kingdom">United Kingdom</option>
+                          <option value="Canada">Canada</option>
+                          <option value="Australia">Australia</option>
+                          <option value="Germany">Germany</option>
+                          <option value="France">France</option>
+                        </select>
                       </div>
                     </div>
                   )}
 
-                  {paymentMethod === 'upi' && (
-                    <div style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid var(--border)', marginBottom: '1.5rem', textAlign: 'center' }}>
-                      <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, color: '#0f172a' }}>Scan QR Code via GPay / PhonePe / Paytm</p>
-                      <div style={{ width: '120px', height: '120px', background: '#e2e8f0', margin: '0.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', fontWeight: 700, color: '#64748b' }}>QR CODE</div>
-                    </div>
-                  )}
-
-                  <button type="submit" className="btn-primary">Pay ${calculateTotal() ? calculateTotal() + 10 : selectedListing.pricePerHour + 10}.00</button>
+                  <button type="submit" className="stripe-submit-btn">
+                    Pay ${calculateTotal() ? calculateTotal() + 10 : selectedListing.pricePerHour + 10}.00 & Confirm Booking
+                  </button>
                 </form>
               </div>
             </div>
           </div>
         )}
 
-        {/* ORDER CONFIRMATION SUCCESS VIEW */}
-        {view === 'success' && (
-          <div className="animated-page">
-            <div className="success-container">
-              <div className="success-icon-circle">✓</div>
-              <h2 style={{ fontSize: '2rem', color: '#0f172a', margin: '0 0 0.5rem 0' }}>Booking Confirmed!</h2>
-              <p style={{ color: '#64748b', margin: '0 0 2rem 0' }}>Sit back & relax! Your space reservation has been successfully booked and secured.</p>
-
-              <div style={{ background: '#f8fafc', border: '1px solid var(--border)', borderRadius: '12px', padding: '1.5rem', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                  <span style={{ color: '#64748b' }}>Booking ID</span>
-                  <strong style={{ color: '#0f172a' }}>#{latestBooking?._id?.slice(-8).toUpperCase() || 'SPOT7890'}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                  <span style={{ color: '#64748b' }}>Confirmation Time</span>
-                  <strong style={{ color: '#16a34a' }}>Instant Confirmation</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.95rem' }}>
-                  <span style={{ color: '#64748b' }}>Payment Status</span>
-                  <span style={{ background: '#dcfce7', color: '#15803d', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 700 }}>Paid via {latestBooking?.paymentMethod?.toUpperCase()}</span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <button onClick={fetchMyBookings} className="btn-primary">Track in My Bookings</button>
-                <button onClick={() => { setView('home'); setStartTime(''); setEndTime(''); }} className="btn-secondary" style={{ width: '100%' }}>Back to Explore</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* MY BOOKINGS DASHBOARD VIEW */}
-        {view === 'dashboard' && (
-          <div className="animated-page">
-            <div className="dashboard-container" style={{ width: '90%', maxWidth: '1000px', margin: '2.5rem auto', padding: '0 2%' }}>
-              <h2>My Bookings</h2>
-              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Review your active reservations, download payment receipts, or cancel bookings if needed.</p>
+        {/* SUCCESS VIEW */}
+        {view === 'success' && latestBooking && (
+          <div className="animated-page" style={{ maxWidth: '600px', margin: '3rem auto', textAlign: 'center', background: '#fff', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+            <div style={{ width: '64px', height: '64px', background: '#dcfce7', color: '#15803d', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', margin: '0 auto 1.5rem auto' }}>✓</div>
+            <h2 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Booking Confirmed!</h2>
+            <p style={{ color: '#64748b', marginBottom: '2rem' }}>Your reservation has been securely processed and confirmed.</p>
+            
+            <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '10px', textAlign: 'left', marginBottom: '2rem', border: '1px solid var(--border)' }}>
+              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, color: '#0f172a' }}>Booking Reference ID</p>
+              <p style={{ margin: '0 0 1rem 0', fontFamily: 'monospace', color: '#475569', fontSize: '0.9rem' }}>{latestBooking._id}</p>
               
-              {myBookings.length === 0 ? (
-                <div style={{ background: '#f8fafc', border: '1px solid var(--border)', borderRadius: '12px', padding: '3rem', textAlign: 'center' }}>
-                  <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>You have not booked any spaces yet.</p>
-                  <button onClick={() => setView('home')} className="btn-primary" style={{ width: 'auto', display: 'inline-block' }}>Explore Spaces</button>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  {myBookings.map(b => (
-                    <div key={b._id} style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '12px', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', boxShadow: '0 4px 12px rgba(0,0,0,0.04)' }}>
-                      <div>
-                        <h4 style={{ margin: '0 0 0.3rem 0', fontSize: '1.1rem', color: '#0f172a' }}>{b.listing?.title || 'Space Listing'}</h4>
-                        <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#64748b' }}>📍 {b.listing?.location}</p>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569' }}>
-                          From: {new Date(b.startTime).toLocaleString()} → To: {new Date(b.endTime).toLocaleString()}
-                        </p>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                        <div style={{ textAlign: 'right' }}>
-                          <p style={{ margin: '0 0 0.2rem 0', fontWeight: 700, color: '#0f172a', fontSize: '1.1rem' }}>${b.totalPrice}</p>
-                          <span style={{ background: b.status === 'Cancelled' ? '#fee2e2' : '#dcfce7', color: b.status === 'Cancelled' ? '#dc2626' : '#15803d', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
-                            {b.status}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <button onClick={() => downloadReceipt(b)} className="btn-secondary" style={{ padding: '0.5rem 0.8rem', fontSize: '0.85rem' }}>📄 Receipt</button>
-                          {b.status !== 'Cancelled' && (
-                            <button onClick={() => handleCancelBooking(b._id)} style={{ background: '#fee2e2', color: '#dc2626', border: 'none', padding: '0.5rem 0.8rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>Cancel</button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, color: '#0f172a' }}>Time Period</p>
+              <p style={{ margin: '0 0 1rem 0', color: '#475569', fontSize: '0.9rem' }}>
+                {new Date(latestBooking.startTime).toLocaleString()} → {new Date(latestBooking.endTime).toLocaleString()}
+              </p>
+
+              <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600, color: '#0f172a' }}>Total Paid</p>
+              <p style={{ margin: 0, color: '#0f172a', fontWeight: 700, fontSize: '1.1rem' }}>${latestBooking.totalPrice}.00 ({latestBooking.paymentMethod.toUpperCase()})</p>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <button onClick={() => { setView('home'); }} className="btn-primary" style={{ width: 'auto' }}>Browse More Spaces</button>
+              <button onClick={fetchMyBookings} className="btn-secondary">View My Bookings</button>
             </div>
           </div>
         )}
 
-        {/* ADMIN DASHBOARD VIEW */}
-        {view === 'admin' && (
-          <div className="animated-page">
-            <div className="admin-container" style={{ width: '90%', maxWidth: '1100px', margin: '2.5rem auto', padding: '0 2%' }}>
-              <h2>Admin Activity Dashboard</h2>
-              <p style={{ color: '#64748b', marginBottom: '2rem' }}>Manage all platform records, active listings, and user bookings.</p>
-              
-              <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
-                <div style={{ background: '#f8fafc', border: '1px solid var(--border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
-                  <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: '#ff385c' }}>{adminData.totalUsers}</h3>
-                  <p style={{ margin: 0, color: '#64748b', fontWeight: 600 }}>Registered Users</p>
-                </div>
-                <div style={{ background: '#f8fafc', border: '1px solid var(--border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
-                  <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: '#ff385c' }}>{adminData.totalListings}</h3>
-                  <p style={{ margin: 0, color: '#64748b', fontWeight: 600 }}>Active Spaces</p>
-                </div>
-                <div style={{ background: '#f8fafc', border: '1px solid var(--border)', padding: '1.5rem', borderRadius: '12px', textAlign: 'center' }}>
-                  <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '2rem', color: '#ff385c' }}>{adminData.totalBookings}</h3>
-                  <p style={{ margin: 0, color: '#64748b', fontWeight: 600 }}>Total Bookings</p>
-                </div>
-              </div>
-
-              <h3 style={{ marginTop: '2rem', marginBottom: '1rem', color: '#0f172a' }}>All Platform Bookings</h3>
-              {adminData.bookings.length === 0 ? (
-                <p>No bookings made yet.</p>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {adminData.bookings.map(b => (
-                    <div key={b._id} style={{ background: '#f8fafc', padding: '1rem 1.5rem', borderRadius: '8px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <div>
-                        <h4 style={{ margin: '0 0 0.2rem 0', color: '#0f172a' }}>{b.listing?.title || 'Deleted Listing'}</h4>
-                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>
-                          Booked by: <strong>{b.user?.name || 'Unknown User'}</strong> ({b.user?.email}) | Paid via: <strong>{b.paymentMethod?.toUpperCase()}</strong>
-                        </p>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <p style={{ margin: '0 0 0.2rem 0', fontWeight: 700, color: '#0f172a' }}>${b.totalPrice}</p>
-                        <span style={{ background: b.status === 'Cancelled' ? '#fee2e2' : '#dcfce7', color: b.status === 'Cancelled' ? '#dc2626' : '#15803d', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>{b.status}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* SECURE LOGIN VIEW */}
+        {/* LOGIN VIEW */}
         {view === 'login' && (
-          <div className="animated-page">
-            <div className="auth-container">
-              <h2>Log in to SpotShare</h2>
-              <form onSubmit={handleLogin} autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="animated-page" style={{ maxWidth: '420px', margin: '4rem auto', background: '#fff', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+            <h2 style={{ marginBottom: '0.5rem', color: '#0f172a', fontSize: '1.8rem' }}>Welcome back</h2>
+            <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Enter your credentials to access your account.</p>
+            
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="stripe-input-group" style={{ margin: 0 }}>
+                <label>Email address</label>
                 <input 
                   type="email" 
-                  name="spotshare_login_email"
-                  id="spotshare_login_email"
-                  autoComplete="new-password"
-                  placeholder="Email" 
-                  value={authForm.email} 
-                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }} 
-                  required
+                  placeholder="you@example.com" 
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                  required 
                 />
+              </div>
+              <div className="stripe-input-group" style={{ margin: 0 }}>
+                <label>Password</label>
                 <input 
                   type="password" 
-                  name="spotshare_login_password"
-                  id="spotshare_login_password"
-                  autoComplete="new-password"
-                  placeholder="Password" 
-                  value={authForm.password} 
-                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }} 
-                  required
+                  placeholder="••••••••" 
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
+                  required 
                 />
-                <button type="submit" className="btn-primary">Login</button>
-              </form>
-              <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', textAlign: 'center' }}>
-                Don't have an account? <span style={{ color: 'var(--primary-brand)', cursor: 'pointer', fontWeight: 600 }} onClick={() => setView('register')}>Sign up</span>
-              </p>
-            </div>
+              </div>
+              <button type="submit" className="stripe-submit-btn" style={{ marginTop: '0.5rem' }}>Log in</button>
+            </form>
+            
+            <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#64748b', fontSize: '0.9rem' }}>
+              Don't have an account? <span style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }} onClick={() => setView('register')}>Sign up</span>
+            </p>
           </div>
         )}
 
-        {/* SECURE REGISTER VIEW */}
+        {/* REGISTER VIEW */}
         {view === 'register' && (
-          <div className="animated-page">
-            <div className="auth-container">
-              <h2>Create an Account</h2>
-              <form onSubmit={handleRegister} autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div className="animated-page" style={{ maxWidth: '420px', margin: '4rem auto', background: '#fff', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+            <h2 style={{ marginBottom: '0.5rem', color: '#0f172a', fontSize: '1.8rem' }}>Create an account</h2>
+            <p style={{ color: '#64748b', marginBottom: '1.5rem', fontSize: '0.95rem' }}>Join SpotShare to start booking unique spaces.</p>
+            
+            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="stripe-input-group" style={{ margin: 0 }}>
+                <label>Full Name</label>
                 <input 
                   type="text" 
-                  name="spotshare_reg_name"
-                  id="spotshare_reg_name"
-                  autoComplete="new-password"
-                  placeholder="Full Name" 
-                  value={authForm.name} 
-                  onChange={(e) => setAuthForm({...authForm, name: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }} 
-                  required
+                  placeholder="John Doe" 
+                  value={authForm.name}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, name: e.target.value }))}
+                  required 
                 />
+              </div>
+              <div className="stripe-input-group" style={{ margin: 0 }}>
+                <label>Email address</label>
                 <input 
                   type="email" 
-                  name="spotshare_reg_email"
-                  id="spotshare_reg_email"
-                  autoComplete="new-password"
-                  placeholder="Email" 
-                  value={authForm.email} 
-                  onChange={(e) => setAuthForm({...authForm, email: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }} 
-                  required
+                  placeholder="you@example.com" 
+                  value={authForm.email}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
+                  required 
                 />
+              </div>
+              <div className="stripe-input-group" style={{ margin: 0 }}>
+                <label>Password</label>
                 <input 
                   type="password" 
-                  name="spotshare_reg_password"
-                  id="spotshare_reg_password"
-                  autoComplete="new-password"
-                  placeholder="Password" 
-                  value={authForm.password} 
-                  onChange={(e) => setAuthForm({...authForm, password: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }} 
-                  required
+                  placeholder="••••••••" 
+                  value={authForm.password}
+                  onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
+                  required 
                 />
-                <select 
-                  value={authForm.role} 
-                  onChange={(e) => setAuthForm({...authForm, role: e.target.value})} 
-                  style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', color: '#0f172a', background: '#fff' }}
-                >
-                  <option value="guest">Guest (Book Spaces)</option>
-                  <option value="host">Host (List Spaces)</option>
-                </select>
-                <button type="submit" className="btn-primary">Register</button>
-              </form>
-              <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', textAlign: 'center' }}>
-                Already have an account? <span style={{ color: 'var(--primary-brand)', cursor: 'pointer', fontWeight: 600 }} onClick={() => setView('login')}>Log in</span>
-              </p>
+              </div>
+              <button type="submit" className="stripe-submit-btn" style={{ marginTop: '0.5rem' }}>Create account</button>
+            </form>
+            
+            <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#64748b', fontSize: '0.9rem' }}>
+              Already have an account? <span style={{ color: 'var(--primary)', cursor: 'pointer', fontWeight: 600 }} onClick={() => setView('login')}>Log in</span>
+            </p>
+          </div>
+        )}
+
+        {/* MY BOOKINGS DASHBOARD */}
+        {view === 'dashboard' && (
+          <div className="animated-page" style={{ maxWidth: '900px', margin: '2rem auto' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>My Bookings</h2>
+            {myBookings.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '3rem', background: '#fff', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <p style={{ color: '#64748b', marginBottom: '1rem' }}>You haven't made any bookings yet.</p>
+                <button onClick={() => setView('home')} className="btn-primary" style={{ width: 'auto' }}>Explore Spaces</button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {myBookings.map(b => (
+                  <div key={b._id} style={{ background: '#fff', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h4 style={{ margin: '0 0 0.3rem 0', color: '#0f172a', fontSize: '1.1rem' }}>{b.listingId?.title || 'Space Rental'}</h4>
+                      <p style={{ margin: '0 0 0.5rem 0', color: '#64748b', fontSize: '0.85rem' }}>{b.listingId?.location}</p>
+                      <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.9rem', color: '#334155' }}>
+                        <b>From:</b> {new Date(b.startTime).toLocaleString()}
+                      </p>
+                      <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#334155' }}>
+                        <b>To:</b> {new Date(b.endTime).toLocaleString()}
+                      </p>
+                      <span className={`status-badge ${b.status?.toLowerCase() || 'confirmed'}`}>{b.status || 'Confirmed'}</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ fontWeight: 700, fontSize: '1.2rem', color: '#0f172a', marginBottom: '1rem' }}>${b.totalPrice}.00</p>
+                      {b.status !== 'Cancelled' && (
+                        <button onClick={() => handleCancelBooking(b._id)} className="btn-secondary" style={{ color: '#dc2626', borderColor: '#fca5a5' }}>
+                          Cancel Booking
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ADMIN PANEL */}
+        {view === 'admin' && user?.role === 'admin' && (
+          <div className="animated-page" style={{ maxWidth: '1000px', margin: '2rem auto' }}>
+            <h2 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>Admin Dashboard</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <p style={{ margin: '0 0 0.5rem 0', color: '#64748b', fontSize: '0.9rem' }}>Total Users</p>
+                <h3 style={{ margin: 0, fontSize: '2rem', color: '#0f172a' }}>{adminData.totalUsers}</h3>
+              </div>
+              <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <p style={{ margin: '0 0 0.5rem 0', color: '#64748b', fontSize: '0.9rem' }}>Total Listings</p>
+                <h3 style={{ margin: 0, fontSize: '2rem', color: '#0f172a' }}>{adminData.totalListings}</h3>
+              </div>
+              <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                <p style={{ margin: '0 0 0.5rem 0', color: '#64748b', fontSize: '0.9rem' }}>Total Bookings</p>
+                <h3 style={{ margin: 0, fontSize: '2rem', color: '#0f172a' }}>{adminData.totalBookings}</h3>
+              </div>
             </div>
           </div>
         )}
