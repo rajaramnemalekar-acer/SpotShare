@@ -285,40 +285,39 @@ export default function App() {
       )}
 
       {/* NAVBAR */}
-      <nav className="navbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-        <div className="logo-container" onClick={() => { setView('home'); setStartTime(''); setEndTime(''); setSelectedCategory('All'); }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div className="logo-icon-wrapper">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <nav className="navbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: '4px', overflowX: 'auto', padding: '10px 12px' }}>
+        <div className="logo-container" onClick={() => { setView('home'); setStartTime(''); setEndTime(''); setSelectedCategory('All'); }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+          <div className="logo-icon-wrapper" style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ff385c', borderRadius: '50%' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 21.7C17.3 17 20 13 20 9a8 8 0 1 0-16 0c0 4 2.7 8 8 12.7z"/>
               <circle cx="12" cy="9" r="2.5"/>
             </svg>
           </div>
-          <h2 className="logo-text">Spot<span>Share</span></h2>
+          <h2 className="logo-text" style={{ fontSize: '16px', fontWeight: 'bold', margin: 0, whiteSpace: 'nowrap' }}>Spot<span>Share</span></h2>
         </div>
 
-        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-          <button onClick={() => { setView('home'); setStartTime(''); setEndTime(''); }} className={`btn-secondary ${view === 'home' ? 'active-tab' : ''}`}>
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+          <button onClick={() => { setView('home'); setStartTime(''); setEndTime(''); }} className={`btn-secondary ${view === 'home' ? 'active-tab' : ''}`} style={{ padding: '6px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}>
             Explore
           </button>
           {user ? (
             <>
-              <button onClick={fetchMyBookings} className={`btn-secondary ${view === 'dashboard' ? 'active-tab' : ''}`}>
-                My Bookings
+              <button onClick={fetchMyBookings} className={`btn-secondary ${view === 'dashboard' ? 'active-tab' : ''}`} style={{ padding: '6px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                Bookings
               </button>
               {user.role === 'admin' && (
-                <button onClick={fetchAdminStats} className={`btn-secondary ${view === 'admin' ? 'active-tab' : ''}`}>
-                  Admin Panel
+                <button onClick={fetchAdminStats} className={`btn-secondary ${view === 'admin' ? 'active-tab' : ''}`} style={{ padding: '6px 8px', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                  Admin
                 </button>
               )}
-              <span className="user-greeting">Hi, {user.name}</span>
-              <button onClick={handleLogout} className="btn-secondary">Logout</button>
+              <button onClick={handleLogout} className="btn-secondary" style={{ padding: '6px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}>Logout</button>
             </>
           ) : (
             <>
-              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('login'); }} className={`btn-secondary ${view === 'login' ? 'active-tab' : ''}`}>
+              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('login'); }} className={`btn-secondary ${view === 'login' ? 'active-tab' : ''}`} style={{ padding: '6px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}>
                 Login
               </button>
-              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('register'); }} className={`btn-primary nav-btn-signup ${view === 'register' ? 'active-tab' : ''}`}>
+              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('register'); }} className={`btn-primary nav-btn-signup ${view === 'register' ? 'active-tab' : ''}`} style={{ padding: '6px 10px', fontSize: '12px', whiteSpace: 'nowrap' }}>
                 Sign up
               </button>
             </>
@@ -557,8 +556,8 @@ export default function App() {
             <p className="auth-subtitle">Enter your credentials to access your account.</p>
             
             {authError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex items-center gap-2" style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
-                <span className="font-bold">⚠️</span> {authError}
+              <div style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
+                <span style={{ fontWeight: 'bold' }}>⚠️</span> {authError}
               </div>
             )}
 
@@ -597,8 +596,8 @@ export default function App() {
             <p className="auth-subtitle">Join SpotShare to start booking unique spaces.</p>
             
             {authError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex items-center gap-2" style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
-                <span className="font-bold">⚠️</span> {authError}
+              <div style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
+                <span style={{ fontWeight: 'bold' }}>⚠️</span> {authError}
               </div>
             )}
 
