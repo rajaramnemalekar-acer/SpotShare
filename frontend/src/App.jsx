@@ -33,6 +33,7 @@ export default function App() {
   const [adminData, setAdminData] = useState({ totalUsers: 0, totalListings: 0, totalBookings: 0, bookings: [], listings: [] });
   
   const [authForm, setAuthForm] = useState({ name: '', email: '', password: '', role: 'guest' });
+  const [authError, setAuthError] = useState('');
 
   const handleCardNumberChange = (e) => {
     let val = e.target.value.replace(/\D/g, ''); 
@@ -109,9 +110,10 @@ export default function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!authForm.email || !authForm.password) {
-      showToast('Please fill out all required fields.', 'error');
+      setAuthError('Please fill out all required fields.');
       return;
     }
+    setAuthError('');
     try {
       const res = await axios.post(`${API_URL}/auth/login`, {
         email: authForm.email,
@@ -125,16 +127,17 @@ export default function App() {
       setAuthForm({ name: '', email: '', password: '', role: 'guest' });
       showToast('Logged in successfully!', 'success');
     } catch (err) {
-      showToast(err.response?.data?.message || 'Login failed', 'error');
+      setAuthError(err.response?.data?.message || 'Login failed');
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!authForm.name || !authForm.email || !authForm.password) {
-      showToast('Please fill out all required fields.', 'error');
+      setAuthError('Please fill out all required fields.');
       return;
     }
+    setAuthError('');
     try {
       const res = await axios.post(`${API_URL}/auth/register`, authForm);
       setToken(res.data.token);
@@ -145,7 +148,7 @@ export default function App() {
       setAuthForm({ name: '', email: '', password: '', role: 'guest' });
       showToast('Account created successfully!', 'success');
     } catch (err) {
-      showToast(err.response?.data?.message || 'Registration failed', 'error');
+      setAuthError(err.response?.data?.message || 'Registration failed');
     }
   };
 
@@ -221,6 +224,7 @@ export default function App() {
     }
     if (!token) {
       setAuthForm({ name: '', email: '', password: '', role: 'guest' });
+      setAuthError('');
       setView('login');
       showToast('Please log in to book this space.', 'error');
       return;
@@ -281,8 +285,8 @@ export default function App() {
       )}
 
       {/* NAVBAR */}
-      <nav className="navbar">
-        <div className="logo-container" onClick={() => { setView('home'); setStartTime(''); setEndTime(''); setSelectedCategory('All'); }}>
+      <nav className="navbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+        <div className="logo-container" onClick={() => { setView('home'); setStartTime(''); setEndTime(''); setSelectedCategory('All'); }} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div className="logo-icon-wrapper">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 21.7C17.3 17 20 13 20 9a8 8 0 1 0-16 0c0 4 2.7 8 8 12.7z"/>
@@ -292,7 +296,7 @@ export default function App() {
           <h2 className="logo-text">Spot<span>Share</span></h2>
         </div>
 
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
           <button onClick={() => { setView('home'); setStartTime(''); setEndTime(''); }} className={`btn-secondary ${view === 'home' ? 'active-tab' : ''}`}>
             Explore
           </button>
@@ -311,10 +315,10 @@ export default function App() {
             </>
           ) : (
             <>
-              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setView('login'); }} className={`btn-secondary ${view === 'login' ? 'active-tab' : ''}`}>
+              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('login'); }} className={`btn-secondary ${view === 'login' ? 'active-tab' : ''}`}>
                 Login
               </button>
-              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setView('register'); }} className={`btn-primary nav-btn-signup ${view === 'register' ? 'active-tab' : ''}`}>
+              <button onClick={() => { setAuthForm({ name: '', email: '', password: '', role: 'guest' }); setAuthError(''); setView('register'); }} className={`btn-primary nav-btn-signup ${view === 'register' ? 'active-tab' : ''}`}>
                 Sign up
               </button>
             </>
@@ -409,7 +413,7 @@ export default function App() {
               </div>
 
               <div className="checkout-right-pane">
-                <form onSubmit={handleBooking} autoComplete="off">
+                <form onSubmit={handleBooking} autoComplete="off" noValidate>
                   <h3>Booking Duration</h3>
                   <div className="duration-inputs">
                     <div className="stripe-input-group">
@@ -419,7 +423,6 @@ export default function App() {
                         value={startTime} 
                         onChange={(e) => setStartTime(e.target.value)} 
                         onClick={(e) => e.target.showPicker && e.target.showPicker()}
-                        required 
                       />
                     </div>
                     <div className="stripe-input-group">
@@ -429,7 +432,6 @@ export default function App() {
                         value={endTime} 
                         onChange={(e) => setEndTime(e.target.value)} 
                         onClick={(e) => e.target.showPicker && e.target.showPicker()}
-                        required 
                       />
                     </div>
                   </div>
@@ -445,7 +447,6 @@ export default function App() {
                       placeholder="you@example.com" 
                       value={checkoutForm.email} 
                       onChange={(e) => setCheckoutForm(prev => ({ ...prev, email: e.target.value }))} 
-                      required 
                     />
                   </div>
 
@@ -465,7 +466,6 @@ export default function App() {
                             value={checkoutForm.cardNumber}
                             onChange={handleCardNumberChange}
                             maxLength="19"
-                            required 
                           />
                           <div className="stripe-card-inline-group">
                             <input 
@@ -474,7 +474,6 @@ export default function App() {
                               value={checkoutForm.expiry}
                               onChange={handleExpiryChange}
                               maxLength="5"
-                              required 
                             />
                             <input 
                               type="password" 
@@ -482,7 +481,6 @@ export default function App() {
                               value={checkoutForm.cvc}
                               onChange={handleCvcChange}
                               maxLength="4"
-                              required 
                             />
                           </div>
                         </div>
@@ -495,7 +493,6 @@ export default function App() {
                           placeholder="Full name on card" 
                           value={checkoutForm.cardholderName}
                           onChange={(e) => setCheckoutForm(prev => ({ ...prev, cardholderName: e.target.value }))}
-                          required 
                         />
                       </div>
 
@@ -559,7 +556,13 @@ export default function App() {
             <h2>Welcome back</h2>
             <p className="auth-subtitle">Enter your credentials to access your account.</p>
             
-            <form onSubmit={handleLogin} className="auth-form">
+            {authError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex items-center gap-2" style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
+                <span className="font-bold">⚠️</span> {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="auth-form" noValidate>
               <div className="stripe-input-group">
                 <label>Email address</label>
                 <input 
@@ -567,7 +570,6 @@ export default function App() {
                   placeholder="you@example.com" 
                   value={authForm.email}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
-                  required 
                 />
               </div>
               <div className="stripe-input-group">
@@ -577,14 +579,13 @@ export default function App() {
                   placeholder="••••••••" 
                   value={authForm.password}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
-                  required 
                 />
               </div>
               <button type="submit" className="btn-primary">Log in</button>
             </form>
             
             <p className="auth-switch-text">
-              Don't have an account? <span onClick={() => setView('register')}>Sign up</span>
+              Don't have an account? <span onClick={() => { setAuthError(''); setView('register'); }}>Sign up</span>
             </p>
           </div>
         )}
@@ -595,7 +596,13 @@ export default function App() {
             <h2>Create an account</h2>
             <p className="auth-subtitle">Join SpotShare to start booking unique spaces.</p>
             
-            <form onSubmit={handleRegister} className="auth-form">
+            {authError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-sm flex items-center gap-2" style={{ marginBottom: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', borderRadius: '8px', fontSize: '14px' }}>
+                <span className="font-bold">⚠️</span> {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleRegister} className="auth-form" noValidate>
               <div className="stripe-input-group">
                 <label>Full Name</label>
                 <input 
@@ -603,7 +610,6 @@ export default function App() {
                   placeholder="John Doe" 
                   value={authForm.name}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, name: e.target.value }))}
-                  required 
                 />
               </div>
               <div className="stripe-input-group">
@@ -613,7 +619,6 @@ export default function App() {
                   placeholder="you@example.com" 
                   value={authForm.email}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, email: e.target.value }))}
-                  required 
                 />
               </div>
               <div className="stripe-input-group">
@@ -623,14 +628,13 @@ export default function App() {
                   placeholder="••••••••" 
                   value={authForm.password}
                   onChange={(e) => setAuthForm(prev => ({ ...prev, password: e.target.value }))}
-                  required 
                 />
               </div>
               <button type="submit" className="btn-primary">Create account</button>
             </form>
             
             <p className="auth-switch-text">
-              Already have an account? <span onClick={() => setView('login')}>Log in</span>
+              Already have an account? <span onClick={() => { setAuthError(''); setView('login'); }}>Log in</span>
             </p>
           </div>
         )}
