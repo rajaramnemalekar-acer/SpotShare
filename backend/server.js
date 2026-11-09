@@ -793,7 +793,11 @@ const autoSeedDatabase = async () => {
 };
 
 // Connect to MongoDB Atlas and start server
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, {
+  serverSelectionTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+  family: 4 // Forces IPv4 to prevent network and socket drops
+})
   .then(async () => {
     console.log("Connected to MongoDB successfully.");
     
