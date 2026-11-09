@@ -205,7 +205,7 @@ export default function App() {
     }
     if (paymentMethod === 'stripe') {
       const rawCard = checkoutForm.cardNumber.replace(/\s/g, '');
-      if (rawCard.length < 16) {
+      if (rawCard.length !== 16 || isNaN(rawCard)) {
         showToast('Please enter a valid 16-digit card number.', 'error');
         return;
       }
@@ -213,7 +213,7 @@ export default function App() {
         showToast('Please enter a valid expiration date (MM/YY).', 'error');
         return;
       }
-      if (checkoutForm.cvc.length < 3) {
+      if (checkoutForm.cvc.length < 3 || isNaN(checkoutForm.cvc)) {
         showToast('Please enter a valid CVC code.', 'error');
         return;
       }
